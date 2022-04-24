@@ -116,7 +116,76 @@ class Text {
         this.c = c;
         this.s = s;
     }
+
+    Draw(){
+        ctx.beginPath();
+        ctx.fillStyle = this.c;
+        ctx.font = this.s + "px sans-serif";
+        ctx.textAlign = this.a;
+        ctx.fillText(this.t, this.x, this.y);
+        ctx.closePath();
+    }
 }
+
+//game functions
+function SpawnObstacle(){
+    let size = RandomIntInRange(20, 70);
+    let type = RandomIntInRange(0, 1);
+    let obstacle = new Obstacle(canvas.width + size, canvas.height - size, size, size, "#2484E4");
+
+    if(type == 1){
+        obstacle.y -= player.originalHeight - 10;
+    }
+    obstacles.push(obstacle);
+}
+
+function RandomIntInRange(min, max){
+    return Math.round(Math.random() * (max-min) + min);
+}
+
+function Start(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    ctx.font = "20px sans-serif";
+
+    gameSpeed = 3;
+    gravity = 1;
+
+    score = 0;
+    highscore = 0;
+    if(localStorage.getItem("highscore")){
+        highscore = localStorage.getItem("highscore");
+    }
+
+    player = new Player(25, 0, 50, 50, "#FF5858");
+
+    scoreText = new Text("Score: " + score, 25, 25, "left", "#212121", "20");
+    highscoreText = new Text("Highscore: " + highscore, canvas.width - 25, 25, "right", "#212121", "20");
+
+    requestAnimationFrame(Update);
+}
+
+let initialSpawnTimer = 200;
+let spawnTimer = initialSpawnTimer;
+
+function Update(){
+    requestAnimationFrame(Update);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    spawnTimer--;
+    if(spawnTimer <= 0){
+        SpawnObstacle();
+        console.log(obstacles);
+        spawnTimer = initialSpawnTimer - gameSpeed * 8;
+
+        if(spawnTimer < 60){
+            spawnTimer = 60;
+        }
+    }
+}
+
+//
 
 
 
