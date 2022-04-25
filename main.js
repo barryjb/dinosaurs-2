@@ -183,9 +183,48 @@ function Update(){
             spawnTimer = 60;
         }
     }
+
+    //spawn enemies
+    for(let i = 0; i < obstacles.length; i++){
+        let o = obstacles[i];
+
+        if(o.x + o.w < 0){
+            obstacles.splice(i, 1);
+        }
+
+        if(player.x < o.x + o.w &&
+            player.x + player.w > o.x &&
+            player.y < o.y + o.h &&
+            player.y + player.h > o.y 
+        ){
+            obstacles = [];
+            score = 0;
+            spawnTimer = initialSpawnTimer;
+            gameSpeed = 3;
+            window.localStorage.setItem("highscore", highscore);
+        }
+
+        o.Update();
+    }
+
+    player.Animate();
+
+    score++;
+    scoreText.t = "Score: " + score;
+    scoreText.Draw();
+
+    if(score > highscore){
+        highscore = score;
+        highscoreText.t = "Highscore: " + highscore;
+    }
+
+    highscoreText.Draw();
+
+    gameSpeed += 0.003;
+
 }
 
-//
+Start();
 
 
 
